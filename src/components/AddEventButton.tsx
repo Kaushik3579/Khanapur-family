@@ -1,13 +1,21 @@
 import React from 'react';
+import { useAuth } from '../context/AuthContext';
+import styles from '../styles/AppStyles.module.css';
 
-const AddEventButton: React.FC = () => (
-  <button
-    className="fixed bottom-6 right-6 bg-indigo-600 text-white rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-3xl hover:bg-indigo-700 transition"
-    onClick={() => document.dispatchEvent(new CustomEvent('openEventModal'))}
-    aria-label="Add Event"
-  >
-    +
-  </button>
-);
+const AddEventButton: React.FC = () => {
+  const { user } = useAuth();
+
+  if (!user) return null;
+
+  return (
+    <button
+      className={styles.floatingAdd}
+      onClick={() => document.dispatchEvent(new CustomEvent('openEventModal'))}
+      aria-label="Add Event"
+    >
+      +
+    </button>
+  );
+};
 
 export default AddEventButton;

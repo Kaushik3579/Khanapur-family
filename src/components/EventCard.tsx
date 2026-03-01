@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { deleteEvent } from '../services/eventService';
 import type { Event } from '../services/eventService';
-import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import styles from '../styles/AppStyles.module.css';
 
@@ -12,8 +11,6 @@ interface Props {
 }
 
 const EventCard: React.FC<Props> = ({ event, isAdmin }) => {
-  const { user } = useAuth();
-
   const handleDelete = async () => {
     if (window.confirm('Delete this event?')) {
       await deleteEvent(event.id!);
@@ -28,7 +25,14 @@ const EventCard: React.FC<Props> = ({ event, isAdmin }) => {
         {event.title}
       </Link>
       <p className={styles.cardDesc}>{event.description}</p>
-      <p className={styles.cardDate}>{new Date(event.date).toLocaleDateString()}</p>
+      <p className={styles.cardDate}>
+        {new Date(event.date).toLocaleDateString(undefined, {
+          weekday: 'short',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })}
+      </p>
       {isAdmin && (
         <button onClick={handleDelete} className={styles.deleteBtn}>Delete</button>
       )}

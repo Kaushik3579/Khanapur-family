@@ -1,10 +1,15 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import styles from '../styles/AppStyles.module.css';
 
 const NotFoundPage: React.FC = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen">
-    <h1 className="text-4xl font-bold mb-4">404</h1>
-    <p className="text-lg">Page not found.</p>
-  </div>
+  <section className={styles.notFound}>
+    <div>
+      <h1 className={styles.notFoundCode}>404</h1>
+      <p className={styles.notFoundText}>Page not found.</p>
+      <p className={styles.authSwitch}><Link to="/">Go to home page</Link></p>
+    </div>
+  </section>
 );
 
 export default NotFoundPage;

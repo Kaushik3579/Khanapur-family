@@ -11,6 +11,27 @@ export type Event = {
 
 const eventsRef = collection(db, 'events');
 
+const normalizeEvent = (id: string, data: Record<string, unknown>): Event => {
+  const rawDate = data.date;
+  let date = '';
+
+  if (rawDate instanceof Timestamp) {
+    date = rawDate.toDate().toISOString();
+  } else if (rawDate instanceof Date) {
+    date = rawDate.toISOString();
+  } else if (typeof rawDate === 'string') {
+    date = rawDate;
+  }
+
+  return {
+    id,
+    title: typeof data.title === 'string' ? data.title : '',
+    description: typeof data.description === 'string' ? data.description : '',
+    date,
+    createdBy: typeof data.createdBy === 'string' ? data.createdBy : '',
+  };
+};
+
 export const createEvent = async (event: Event) => {
   return await addDoc(eventsRef, {
     ...event,
@@ -22,13 +43,13 @@ export const createEvent = async (event: Event) => {
 export const getEvents = async () => {
   const q = query(eventsRef, orderBy('date', 'desc'));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Event));
+  return snapshot.docs.map((eventDoc) => normalizeEvent(eventDoc.id, eventDoc.data()));
 };
 
 export const getEventById = async (id: string) => {
   const docRef = doc(db, 'events', id);
   const docSnap = await getDoc(docRef);
-  return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as Event : null;
+  return docSnap.exists() ? normalizeEvent(docSnap.id, docSnap.data()) : null;
 };
 
 export const deleteEvent = async (id: string) => {

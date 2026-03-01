@@ -26,15 +26,16 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.container} style={{minHeight:'100vh',justifyContent:'center',alignItems:'center',display:'flex'}}>
-      <form onSubmit={handleSignup} className={styles.card} style={{maxWidth:400,width:'100%',padding:'32px 24px',display:'flex',flexDirection:'column',alignItems:'center'}}>
-        <h2 className={styles.cardTitle} style={{marginBottom:16}}>Sign Up</h2>
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className={styles.input} style={{marginBottom:12}} required />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className={styles.input} style={{marginBottom:20}} required />
-        <button type="submit" className={styles.submitBtn} style={{width:'100%',marginBottom:8}} disabled={loading}>{loading ? 'Signing up...' : 'Sign Up'}</button>
-        <p style={{marginTop:8,fontSize:'0.95rem',textAlign:'center'}}>Already have an account? <Link to="/login" style={{color:'#4f46e5',textDecoration:'underline'}}>Login</Link></p>
+    <section className={styles.authShell}>
+      <form onSubmit={handleSignup} className={styles.authCard}>
+        <h1 className={styles.authTitle}>Create account</h1>
+        <p className={styles.authSubtitle}>Join your family workspace and start planning together.</p>
+        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className={styles.input} required />
+        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className={styles.input} required />
+        <button type="submit" className={styles.submitBtn} disabled={loading}>{loading ? 'Signing up...' : 'Sign Up'}</button>
+        <p className={styles.authSwitch}>Already have an account? <Link to="/login">Login</Link></p>
       </form>
-    </div>
+    </section>
   );
 };
 

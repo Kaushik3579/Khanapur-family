@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -21,20 +20,23 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="appShell">
           <Navbar />
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<EventsPage />} />
-              <Route path="/event/:id" element={<EventDetailsPage />} />
-              <Route path="/my-events" element={<MyEventsPage />} />
-              <Route path="/members" element={<MembersPage />} />
-              <Route path="/connect" element={<ConnectPage />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <main className="appMain">
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<EventsPage />} />
+                <Route path="/events" element={<EventsPage />} />
+                <Route path="/event/:id" element={<EventDetailsPage />} />
+                <Route path="/my-events" element={<MyEventsPage />} />
+                <Route path="/members" element={<MembersPage />} />
+                <Route path="/connect" element={<ConnectPage />} />
+              </Route>
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </main>
           <AddEventButton />
           <EventModal />
           <ToastContainer position="bottom-center" autoClose={3000} />

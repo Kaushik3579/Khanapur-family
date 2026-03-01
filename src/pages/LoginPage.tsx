@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../services/firebase';
 import { toast } from 'react-toastify';
+import styles from '../styles/AppStyles.module.css';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -25,15 +26,16 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="input mb-2" required />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="input mb-4" required />
-        <button type="submit" className="btn w-full" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-        <p className="mt-2 text-sm">Don't have an account? <Link to="/signup" className="text-indigo-600">Sign up</Link></p>
+    <section className={styles.authShell}>
+      <form onSubmit={handleLogin} className={styles.authCard}>
+        <h1 className={styles.authTitle}>Welcome back</h1>
+        <p className={styles.authSubtitle}>Sign in to view your family calendar and updates.</p>
+        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className={styles.input} required />
+        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className={styles.input} required />
+        <button type="submit" className={styles.submitBtn} disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+        <p className={styles.authSwitch}>Don't have an account? <Link to="/signup">Create one</Link></p>
       </form>
-    </div>
+    </section>
   );
 };
 
