@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, addDoc, getDocs, doc, getDoc, deleteDoc, Timestamp, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, getDoc, deleteDoc, Timestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
 
 export type Event = {
   id?: string;
@@ -44,6 +44,22 @@ export const getEvents = async () => {
   const q = query(eventsRef, orderBy('date', 'desc'));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((eventDoc) => normalizeEvent(eventDoc.id, eventDoc.data()));
+};
+
+export const subscribeEvents = (
+  onData: (events: Event[]) => void,
+  onError?: (error: Error) => void,
+) => {
+  const q = query(eventsRef, orderBy('date', 'desc'));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      onData(snapshot.docs.map((eventDoc) => normalizeEvent(eventDoc.id, eventDoc.data())));
+    },
+    (error) => {
+      if (onError) onError(error);
+    },
+  );
 };
 
 export const getEventById = async (id: string) => {

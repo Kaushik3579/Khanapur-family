@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
       <div className={styles.navbarInner}>
         <Link to="/" className={styles.logo}>
           <span className={styles.logoOrb} />
-          <span className={styles.logoText}>Khanapur Family Hub</span>
+          <span className={styles.logoText}>Khanapur</span>
         </Link>
 
         {user && (

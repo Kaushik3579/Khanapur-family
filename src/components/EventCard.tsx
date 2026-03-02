@@ -7,15 +7,19 @@ import styles from '../styles/AppStyles.module.css';
 
 interface Props {
   event: Event;
-  isAdmin: boolean;
+  canDelete: boolean;
 }
 
-const EventCard: React.FC<Props> = ({ event, isAdmin }) => {
+const EventCard: React.FC<Props> = ({ event, canDelete }) => {
   const handleDelete = async () => {
     if (window.confirm('Delete this event?')) {
-      await deleteEvent(event.id!);
-      toast.success('Event deleted');
-      window.location.reload();
+      try {
+        await deleteEvent(event.id!);
+        toast.success('Event deleted');
+      } catch (err: any) {
+        const code = err?.code ? ` (${err.code})` : '';
+        toast.error(`Unable to delete event${code}`);
+      }
     }
   };
 
@@ -33,7 +37,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin }) => {
           year: 'numeric',
         })}
       </p>
-      {isAdmin && (
+      {canDelete && (
         <button onClick={handleDelete} className={styles.deleteBtn}>Delete</button>
       )}
     </div>

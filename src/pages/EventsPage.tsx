@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { getEvents } from '../services/eventService';
+import { subscribeEvents } from '../services/eventService';
 import type { Event } from '../services/eventService';
 import EventCard from '../components/EventCard';
+import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AppStyles.module.css';
 
 const EventsPage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user, isAdmin } = useAuth();
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        setEvents(await getEvents());
-      } catch {
+    setLoading(true);
+    setError(null);
+    const unsubscribe = subscribeEvents(
+      (nextEvents) => {
+        setEvents(nextEvents);
+        setLoading(false);
+      },
+      () => {
         setError('Unable to load events right now.');
-      }
-      setLoading(false);
-    };
-    fetchEvents();
+        setLoading(false);
+      },
+    );
+    return () => unsubscribe();
   }, []);
 
   if (loading) return <div className={styles.statusPage}>Loading events...</div>;
@@ -41,7 +45,7 @@ const EventsPage: React.FC = () => {
       <div className={styles.container}>
         {events.length > 0 ? (
           events.map((event) => (
-            <EventCard key={event.id} event={event} isAdmin={false} />
+            <EventCard key={event.id} event={event} canDelete={isAdmin || event.createdBy === user?.uid} />
           ))
         ) : (
           <div className={styles.emptyCard}>No events yet. Tap the + button to add the first family event.</div>

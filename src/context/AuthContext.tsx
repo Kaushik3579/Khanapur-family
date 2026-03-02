@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import type { User } from 'firebase/auth';
-import { auth } from '../services/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../services/firebase';
 
 interface AuthContextType {
   user: User | null;
@@ -20,10 +21,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
-      // Example: check admin role from Firestore
       if (firebaseUser) {
-        // TODO: Fetch user role from Firestore and set isAdmin
-        setIsAdmin(false); // Default to false
+        if (firebaseUser.email === 'kaushik3579@gmail.com') {
+          setIsAdmin(true);
+          setLoading(false);
+          return;
+        }
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          const role = (userDoc.data() as { role?: string } | undefined)?.role;
+          setIsAdmin(role === 'admin');
+        } catch {
+          setIsAdmin(false);
+        }
       } else {
         setIsAdmin(false);
       }

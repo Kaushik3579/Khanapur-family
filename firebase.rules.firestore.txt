@@ -1,13 +1,75 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function userDocPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'kaushik3579@gmail.com';
+    }
+
+    function isOwner() {
+      return isSignedIn() && resource.data.createdBy == request.auth.uid;
+    }
+
+    function isLegacyEventWithoutOwner() {
+      return !("createdBy" in resource.data);
+    }
+
     match /events/{eventId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
-      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow delete: if isOwner() || isAdmin() || (isSignedIn() && isLegacyEventWithoutOwner());
+      allow update: if isOwner() || isAdmin();
     }
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+    match /connectProfiles/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+    match /connectMessages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.name is string;
+      allow update, delete: if false;
+    }
+    match /connectCalls/{callId} {
+      allow create: if isSignedIn() && request.resource.data.callerId == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && (
+        resource.data.callerId == request.auth.uid ||
+        resource.data.calleeId == request.auth.uid
+      );
+
+      match /callerCandidates/{candidateId} {
+        allow read, create: if isSignedIn() && (
+          get(/databases/$(database)/documents/connectCalls/$(callId)).data.callerId == request.auth.uid ||
+          get(/databases/$(database)/documents/connectCalls/$(callId)).data.calleeId == request.auth.uid
+        );
+        allow update, delete: if false;
+      }
+      match /calleeCandidates/{candidateId} {
+        allow read, create: if isSignedIn() && (
+          get(/databases/$(database)/documents/connectCalls/$(callId)).data.callerId == request.auth.uid ||
+          get(/databases/$(database)/documents/connectCalls/$(callId)).data.calleeId == request.auth.uid
+        );
+        allow update, delete: if false;
+      }
+    }
+    match /connectGroupCalls/{groupCallId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.hostId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.hostId == request.auth.uid;
     }
   }
 }

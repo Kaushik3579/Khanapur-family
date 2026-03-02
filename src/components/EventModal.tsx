@@ -39,7 +39,6 @@ const EventModal: React.FC = () => {
       });
       toast.success('Event created!');
       handleClose();
-      window.location.reload();
     } catch (err: any) {
       toast.error(err.message);
     } finally {

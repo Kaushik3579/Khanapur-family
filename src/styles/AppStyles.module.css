@@ -332,6 +332,55 @@
   gap: 0.6rem;
 }
 
+.callBanner {
+  margin: 0.5rem 0 0.8rem;
+  border: 1px solid #dce6e8;
+  border-radius: 14px;
+  background: #f8fbfb;
+  padding: 0.8rem;
+}
+
+.callButtons {
+  margin-top: 0.55rem;
+  display: flex;
+  gap: 0.55rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.callPanel {
+  margin: 0.5rem 0 0.9rem;
+  border: 1px solid #dce6e8;
+  border-radius: 14px;
+  background: #f8fbfb;
+  padding: 0.8rem;
+}
+
+.videoGrid {
+  margin: 0.6rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.55rem;
+}
+
+.videoTile {
+  width: 100%;
+  min-height: 170px;
+  border-radius: 12px;
+  background: #0a171b;
+  object-fit: cover;
+}
+
+.voiceOnlyPanel {
+  margin: 0.6rem 0;
+  border: 1px solid #dce6e8;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #355860;
+  font-weight: 700;
+  padding: 0.9rem;
+}
+
 .connectBadge {
   display: inline-block;
   margin-top: 0.8rem;
@@ -367,6 +416,8 @@
   display: flex;
   gap: 0.45rem;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .notFound {
@@ -597,25 +648,40 @@
 
 .floatingAdd {
   position: fixed;
-  right: 1.2rem;
-  bottom: 1.2rem;
-  width: 3.4rem;
-  height: 3.4rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  min-width: 4.25rem;
+  height: 4.25rem;
   border: none;
-  border-radius: 50%;
+  border-radius: 999px;
   color: #f5ffff;
-  font-size: 1.8rem;
+  font-size: 2rem;
+  font-weight: 800;
   line-height: 1;
-  background: #f08432;
-  box-shadow: 0 14px 30px rgba(165, 89, 29, 0.35);
+  background: #e96d13;
+  box-shadow: 0 16px 34px rgba(165, 89, 29, 0.42);
   cursor: pointer;
   transition: transform 180ms ease, filter 180ms ease;
   z-index: 90;
+  padding: 0 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 2px solid rgba(255, 255, 255, 0.95);
 }
 
 .floatingAdd:hover {
-  transform: translateY(-2px) scale(1.02);
-  filter: brightness(1.04);
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.08);
+}
+
+.floatingAdd::after {
+  content: "Add Event";
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1;
 }
 
 @keyframes sectionIn {
@@ -671,5 +737,16 @@
 
   .navBtn {
     margin-left: 0;
+  }
+
+  .floatingAdd {
+    min-width: 3.8rem;
+    height: 3.8rem;
+    font-size: 1.8rem;
+    padding: 0 1rem;
+  }
+
+  .floatingAdd::after {
+    content: "";
   }
 }
